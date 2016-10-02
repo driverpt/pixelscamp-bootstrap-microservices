@@ -1,0 +1,44 @@
+version: "2"
+services:
+  book:
+    image: driverpt/book-service
+    links:
+      - consul
+    depends_on:
+      - consul
+  consul:
+    image: consul:v0.7.0
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+  kong-database:
+    image: postgres:9.5
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kong
+  kong:
+    image: driverpt/kong
+    links:
+      - kong-database
+      - consul
+      - book
+    depends_on:
+      - kong-database
+    environment:
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_PASSWORD=kong
+      - KONG_DATABASE=postgres
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+  kong-ui:
+    image: pgbi/kong-dashboard
+    links:
+      - kong
+    depends_on:
+      - kong
+    ports:
+      - "8080:8080"
+  redis:
+    image: redis:3.2-alpine
