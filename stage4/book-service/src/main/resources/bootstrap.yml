@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: book-service
+  cloud:
+    consul:
+      discovery:
+        preferIpAddress: true
+        tags: api
+      host: ${CONSUL_HOST:127.0.0.1}
+      config:
+        enabled: true
+        prefix: configuration
+        defaultContext: apps
+        profileSeparator: '::'

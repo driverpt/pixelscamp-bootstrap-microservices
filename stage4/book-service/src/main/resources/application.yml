@@ -1,0 +1,29 @@
+server:
+  port: ${APP_PORT:8082}
+  contextPath: /
+
+endpoints:
+  health:
+    sensitive: false
+  restart:
+    enabled: false
+  shutdown:
+    enabled: false
+
+security:
+  jwt:
+    signing:
+      #key: "YkPxBYAFgMjv9CD4VqSFi13yNZQyRDB0MeSD2eS+z/DWsr71FZURQfwp2/VXk+vsn6E62gguhBoi4P96mad8YA=="
+      key: ${SECRET_KEY:changeit}
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  resources:
+    cachePeriod: 604800
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: 6379

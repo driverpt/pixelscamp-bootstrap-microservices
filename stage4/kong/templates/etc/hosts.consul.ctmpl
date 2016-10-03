@@ -1,0 +1,2 @@
+{{range services}}{{if in .Tags "api"}}{{range service .Name}}{{.Address}} {{.Name}}
+{{end}}{{end}}{{end}}

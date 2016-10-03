@@ -1,0 +1,16 @@
+version: "2"
+services:
+  gateway:
+    build: nginx
+    links:
+      - book
+    ports:
+      - "80:80"
+    depends_on:
+      - book
+  book:
+    image: driverpt/book-service
+    ports:
+      - "80"
+    environment:
+      - APP_PORT=80

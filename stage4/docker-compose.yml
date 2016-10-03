@@ -1,0 +1,78 @@
+version: "2"
+services:
+  gateway:
+    build: kong/
+    links:
+      - kong-database
+      - redis
+      - consul
+    depends_on:
+      - kong-database
+      - consul
+      - redis
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    environment:
+      - CONSUL_HOST=consul
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_PASSWORD=kong
+      - KONG_DATABASE=postgres
+      - KONG_CUSTOM_PLUGINS=redis-session
+  kong-ui:
+    image: pgbi/kong-dashboard
+    links:
+      - gateway
+    depends_on:
+      - gateway
+    ports:
+      - "8080:8080"
+  kong-database:
+    image: postgres:9.5
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kong
+  consul:
+    image: consul:v0.7.0
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+  book:
+    image: driverpt/book-service
+    ports:
+      - "80"
+    links:
+      - redis
+      - consul
+    environment:
+      - APP_PORT=80
+      - REDIS_HOST=redis
+      - CONSUL_HOST=consul
+      - SECRET_KEY=changeitasap
+    depends_on:
+      - redis
+      - consul
+    volumes:
+      - ./keys:/etc/keys
+  auth:
+    image: driverpt/auth-service
+    ports:
+      - "80"
+    links:
+      - redis
+      - consul
+    environment:
+      - APP_PORT=80
+      - REDIS_HOST=redis
+      - CONSUL_HOST=consul
+      - SECRET_KEY=changeitasap
+    depends_on:
+      - redis
+      - consul
+    volumes:
+      - ./keys:/etc/keys
+  redis:
+    image: redis:3.2-alpine
+    ports:
+     - "6379:6379"

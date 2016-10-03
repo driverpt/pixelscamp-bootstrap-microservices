@@ -20,7 +20,6 @@ services:
     image: driverpt/kong
     links:
       - kong-database
-      - consul
       - book
     depends_on:
       - kong-database
@@ -42,3 +41,5 @@ services:
       - "8080:8080"
   redis:
     image: redis:3.2-alpine
+    ports:
+      - "6379:6379"

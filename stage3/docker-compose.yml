@@ -1,0 +1,38 @@
+version: "2"
+services:
+  gateway:
+    build: nginx
+    links:
+      - book
+      - auth
+    ports:
+      - "80:80"
+    depends_on:
+      - book
+      - auth
+  book:
+    image: driverpt/book-service
+    ports:
+      - "80"
+    links:
+      - redis
+    environment:
+      - APP_PORT=80
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+  auth:
+    image: driverpt/auth-service
+    ports:
+      - "80"
+    links:
+      - redis
+    environment:
+      - APP_PORT=80
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+  redis:
+    image: redis:3.2-alpine
+    ports:
+     - "6379:6379"
