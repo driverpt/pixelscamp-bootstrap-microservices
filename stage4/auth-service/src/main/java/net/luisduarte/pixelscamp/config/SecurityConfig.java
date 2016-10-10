@@ -43,7 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .formLogin()
         .loginPage("/login")
         .successHandler(authenticationSuccessHandler)
-        .defaultSuccessUrl("/books")
         .permitAll()
         .and()
         .authorizeRequests()
